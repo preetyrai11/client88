@@ -1,24 +1,41 @@
 import logo from './logo.svg';
 import './App.css';
+import Users from './Users';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { getUser } from './redux/userSlice'
+import CreateUser  from './CreateUser'
+import UpdateUser from './UpdateUser'
+
 
 function App() {
+
+  const dispatch = useDispatch() 
+
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const response = await axios.get('http://localhost:3001');
+        dispatch(getUser(response.data));
+      } catch(err) {
+         console.log(err);
+      }
+    }
+
+    fetchData();
+  }, []) 
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter> 
+      <Routes> 
+        <Route path='/' element={<Users />}></Route>
+        <Route path='/create' element={<CreateUser />}></Route>
+        <Route path='/edit/:id' element={<UpdateUser />}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
